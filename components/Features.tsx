@@ -8,11 +8,11 @@ export default function Features() {
         <h2 className="text-4xl font-bold text-gray-900">
           What Sets FitFlow Apart
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="flex flex-col md:flex-row justify-center gap-4">
           {FEATURES.map((feature, index) => (
-            <div key={index} className="bg-gray-100 p-8 rounded-lg shadow-md space-y-4 text-center">
+            <div key={index} className="flex flex-col items-center bg-gray-100 p-8 rounded-lg shadow-md space-y-4 text-center flex-1">
 
-              <div className="flex justify-center"><Image src ={feature.src} width={75} height={75} alt={feature.alt}/></div>
+              <div><Image src ={feature.src} width={50} height={50} alt={feature.alt}/></div>
               <h3 className="text-2xl font-semibold text-gray-800">{feature.title}</h3>
               <p className="text-gray-600">{feature.description}</p>
             </div>
@@ -29,9 +29,6 @@ export default function Features() {
        
       />
     </section>
-
-
-
     </div>
     
 

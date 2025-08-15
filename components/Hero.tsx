@@ -3,7 +3,7 @@ import Button from "@/components/Button";
 
 export default function Hero() {
   return (
-     <section className="relative text-white flex flex-col md:flex-row items-center p-6 overflow-hidden">
+     <section className="relative text-white flex flex-col md:flex-row items-center p-6 gap-8 overflow-hidden">
       {/* The new background gradient overlay with a blue-green combination */}
       <div className="absolute inset-0 bg-gradient-to-br from-green-700 via-green-600 to-orange-500 opacity-80"></div>
       
