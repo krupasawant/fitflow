@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-
+import { SupabaseProvider } from "@/components/SupabaseProvider";
 
 
 export const metadata: Metadata = {
@@ -18,9 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en">
      <body>
-    
-      <Navbar></Navbar>
-      {children}
+    <SupabaseProvider> {/* ✅ Wrap entire app */}
+          <Navbar />
+          {children}
+        </SupabaseProvider>
       </body>
     </html>
   );

@@ -37,11 +37,13 @@ export const FEATURES = [
 
 ];
 
-export const plans = [
+export const PLANS = [
     {
       name: "Basic Plan",
       price: "$19",
       period: "/month",
+      priceId: "price_1RwK3qFhU6M0huUm5Se10nV4", // From Stripe
+
       features: [
         "Access to basic workout library",
         "Community forum access",
@@ -53,6 +55,7 @@ export const plans = [
       name: "Pro Plan",
       price: "$49",
       period: "/month",
+      priceId: "price_1RwK4SFhU6M0huUmsVnknoOH", // From Stripe
       features: [
         "All Basic features",
         "Personalized workout plans",
@@ -65,6 +68,7 @@ export const plans = [
       name: "Premium Plan",
       price: "$99",
       period: "/month",
+      priceId: "price_1RwK58FhU6M0huUmpk40cT1q", // From Stripe
       features: [
         "All Pro features",
         "One-on-one virtual coaching",
