@@ -1,34 +1,43 @@
-import Stripe from "stripe";
+// app/api/checkout/route.ts
 import { NextResponse } from "next/server";
+import Stripe from "stripe";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-07-30.basil", // Make sure this matches your Stripe API version
+  apiVersion: "2025-07-30.basil", // ✅ use stable API version
 });
 
 export async function POST(req: Request) {
-  try {
-    const { priceId } = await req.json();
+  // Supabase client with cookies
+  const supabase = createServerSupabaseClient();
 
-    if (!priceId) {
-      return NextResponse.json({ error: "Missing priceId" }, { status: 400 });
-    }
+  // Get logged-in user
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
-    const session = await stripe.checkout.sessions.create({
-      mode: "subscription", // or 'payment' for one-time
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cancel`,
-    });
-
-    return NextResponse.json({ url: session.url });
-  } catch (error) {
-    console.error("Stripe Checkout error:", error);
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+  if (error || !user?.email) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
+
+  // Parse body
+  const { priceId } = await req.json();
+
+  if (!priceId) {
+    return NextResponse.json({ error: "Missing priceId" }, { status: 400 });
+  }
+
+
+  // Create checkout session
+  const session = await stripe.checkout.sessions.create({
+    mode: "subscription",
+    customer_email: user.email,
+    line_items: [{ price: priceId, quantity: 1 }],
+    success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cancel`,
+     metadata: { user_id: user.id }, 
+  });
+
+  return NextResponse.json({ url: session.url });
 }

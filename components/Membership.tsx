@@ -5,7 +5,7 @@ import Button from "./Button";
 
 export default function Membership() {
   const handleCheckout = async (priceId: string | undefined) => {
-  console.log("you selected ", priceId);
+ 
   if (!priceId) {
     console.log("Free plan or missing priceId — no Stripe checkout");
     return;
