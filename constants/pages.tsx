@@ -2,7 +2,8 @@
 export const NAV_LINKS = [
   { href: '/', key: 'features', label: 'Features' },
   { href: '/', key: 'how fitflow works', label: 'How FitFlow Works?' },
-  { href: '/', key: 'Plans', label: 'Plans' },
+  { href: '/booking', key: 'Book a Class', label: 'Book a Class' },
+  { href: '/upcoming', key: 'Upcoming Bookings', label: 'Upcoming Bookings' },
   { href: '/', key: 'Community ', label: 'Community ' },
   { href: '/', key: 'Contact_us', label: 'Contact Us' },
 ];
@@ -86,15 +87,25 @@ export const PLANS = [
   ];
 
 
+export const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
-
-export const SOCIALS = {
-  title: 'Social',
-  links: [
-    '/facebook.svg',
-    '/instagram.svg',
-    '/twitter.svg',
-    '/youtube.svg',
-    '/wordpress.svg',
+export const staticClasses = {
+  Monday: [
+    { name: "Yoga Flow", time: "9:00 AM" },
+    { name: "Meditation", time: "6:00 PM" },
+  ],
+  Tuesday: [
+    { name: "Yin/Yang Stretch", time: "10:00 AM" },
+    { name: "Hatha Yoga", time: "5:30 PM" },
+  ],
+  Wednesday: [
+    { name: "Slow Flow", time: "8:00 AM" },
+    { name: "Meditation", time: "7:00 PM" },
+  ],
+  Thursday: [
+    { name: "Yoga Flow", time: "9:00 AM" },
+  ],
+  Friday: [
+    { name: "Hatha Yoga", time: "6:00 PM" },
   ],
 };

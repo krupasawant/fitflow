@@ -3,6 +3,15 @@ import Image from "next/image"
 export default function Features() {
   return (
     <div>
+      <section  className="relative flex flex-col md:flex-row items-center p-2 overflow-hidden" >
+      <img
+        src="/feature.jpg"
+        alt="A motivating image of a person working out"
+        height={75}
+       className="w-full"
+       
+      />
+    </section>
     <section className="py-20 px-8 bg-white">
       <div className="max-w-6xl mx-auto text-center space-y-12">
         <h2 className="text-4xl font-bold text-gray-900">
@@ -19,15 +28,6 @@ export default function Features() {
           ))}
         </div>
       </div>
-    </section>
-    <section  className="relative flex flex-col md:flex-row items-center p-2 overflow-hidden" >
-      <img
-        src="/feature.jpg"
-        alt="A motivating image of a person working out"
-        height={75}
-       className="w-full"
-       
-      />
     </section>
     </div>
     

@@ -1,12 +1,13 @@
-// components/SignupForm.tsx
 'use client';
 
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import Button from './Button';
 import Logo from './CustomLogo';
+import { useRouter } from "next/navigation"
 
 export default function SignupForm() {
+  const router = useRouter();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,7 +19,7 @@ export default function SignupForm() {
     setError(null);
     setLoading(true);
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -29,8 +30,15 @@ export default function SignupForm() {
     });
 
     setLoading(false);
-    if (error) setError(error.message);
-    else alert('Check your email to confirm your account');
+    if (error) {
+      console.error(error.message);
+      return;
+    }
+
+    
+    if (data.user) {
+      router.push('/');
+    }
   };
 
   return (

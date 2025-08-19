@@ -1,10 +1,10 @@
-import Image from "next/image";
+
 import Button from "@/components/Button";
 
 export default function Hero() {
   return (
      <section className="relative text-white flex flex-col md:flex-row items-center p-6 gap-8 overflow-hidden">
-      {/* The new background gradient overlay with a blue-green combination */}
+
       <div className="absolute inset-0 bg-gradient-to-br from-green-700 via-green-600 to-orange-500 opacity-80"></div>
       
       <div className="relative z-10 flex-1 max-w-4xl mx-auto md:mx-0 text-center space-y-6">

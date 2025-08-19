@@ -66,7 +66,6 @@ export default function Navbar() {
       </ul>
 
       
-
       <div className="flex gap-3">
         {session ? (
           <>

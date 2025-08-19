@@ -1,13 +1,21 @@
 'use client';
 import { PLANS } from "@/constants/pages";
-import Image from "next/image"
 import Button from "./Button";
+import { supabase } from "../lib/supabase/client";
 
 export default function Membership() {
-  const handleCheckout = async (priceId: string | undefined) => {
+ 
+  const handleCheckout = async (priceId: string | undefined, plan: string |undefined) => {
  
   if (!priceId) {
     console.log("Free plan or missing priceId — no Stripe checkout");
+    return;
+  }
+
+   const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    window.location.href = "/signup";
     return;
   }
 
@@ -15,7 +23,7 @@ export default function Membership() {
     const res = await fetch("/api/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ priceId }),
+      body: JSON.stringify({ priceId, plan }),
     });
 
     const data = await res.json();
@@ -61,16 +69,12 @@ export default function Membership() {
 
                  </ul>
               </div>
-              <Button  onClick={() => handleCheckout(plan.priceId)} className="mt-auto bg-white text-orange-600 font-semibold py-2 px-4 rounded-full shadow hover:bg-gray-100 transition self-end">
+              <Button  onClick={() => handleCheckout(plan.priceId, plan.name)} className="mt-auto bg-white text-orange-600 font-semibold py-2 px-4 rounded-full shadow hover:bg-gray-100 transition self-end">
               Join Now
             </Button>
-
               </div>
-              
-            
              ))}
 
-            
             </div>
            
           </div>

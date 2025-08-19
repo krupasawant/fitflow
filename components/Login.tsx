@@ -1,15 +1,16 @@
-// components/LoginForm.tsx
 'use client';
 
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import Button from './Button';
+import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,10 +18,9 @@ export default function LoginForm() {
     setLoading(true);
 
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-
     setLoading(false);
     if (error) setError(error.message);
-    else window.location.href = '/dashboard'; // redirect after login
+    else router.push('/'); // redirect after login
   };
 
   return (
