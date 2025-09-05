@@ -26,7 +26,8 @@ export default function Membership() {
       body: JSON.stringify({ priceId, plan }),
     });
 
-    const data = await res.json();
+    const data: { url?: string; error?: string } = await res.json();
+ 
     if (data.url) {
       window.location.href = data.url;
     }

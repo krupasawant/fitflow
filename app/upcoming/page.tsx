@@ -1,9 +1,8 @@
-// app/upcoming/page.tsx
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase/client";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase/client';
 
 type ClassType = {
   name: string;
@@ -24,6 +23,8 @@ type UpcomingBooking = {
 export default function UpcomingBookingsPage() {
   const [bookings, setBookings] = useState<UpcomingBooking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isFreePlan, setIsFreePlan] = useState(false);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -34,15 +35,15 @@ export default function UpcomingBookingsPage() {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        router.push("/login");
+        window.location.href = '/login';
         return;
       }
 
       // 2. Check membership
       const { data: membershipData, error: membershipError } = await supabase
-        .from("user_memberships")
-        .select("memberships ( name )")
-        .eq("user_id", user.id);
+        .from('user_memberships')
+        .select('memberships ( name )')
+        .eq('user_id', user.id);
 
       if (membershipError) {
         console.error(membershipError);
@@ -50,14 +51,15 @@ export default function UpcomingBookingsPage() {
       }
 
       const planName = (membershipData?.[0] as any)?.memberships?.name;
-      if (!planName || planName === "free") {
-        router.push("/"); // redirect non-paying users
+      if (!planName || planName === 'Free Member') {
+        setIsFreePlan(true);
+        setLoading(false);
         return;
       }
 
       // 3. Fetch upcoming bookings
       const { data, error } = await supabase
-        .from("bookings")
+        .from('bookings')
         .select(
           `
           id,
@@ -68,14 +70,13 @@ export default function UpcomingBookingsPage() {
           )
         `
         )
-        .eq("user_id", user.id)
-        .gte("scheduled_date", new Date().toISOString().split("T")[0])
-        .order("scheduled_date", { ascending: true });
+        .eq('user_id', user.id);
+
+        console.log("upcoming bookings", data);
 
       if (error) {
         console.error(error);
       } else {
-        // Normalize class_sessions and class_types
         const normalized = (data || []).map((b: any) => ({
           ...b,
           class_sessions: Array.isArray(b.class_sessions)
@@ -109,16 +110,31 @@ export default function UpcomingBookingsPage() {
   if (loading) {
     return (
       <div className="p-8 text-center text-gray-600">
-        Loading bookings...
+        Loading your bookings...
+      </div>
+    );
+  }
+
+  if (isFreePlan) {
+    return (
+      <div className="p-10 max-w-xl mt-10 mx-auto text-center border rounded-lg shadow bg-white">
+        <h1 className="text-xl font-bold mb-4">🔒 No Access</h1>
+        <p className="text-gray-600 text-md mb-6">
+          You're currently on the <strong>Free Plan</strong>. Upgrade to view and manage your upcoming bookings.
+        </p>
+        <a
+          href="/pricing"
+          className="inline-block bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded text-sm font-medium transition"
+        >
+          Upgrade Membership
+        </a>
       </div>
     );
   }
 
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        🗓 Upcoming Bookings
-      </h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">🗓 Upcoming Bookings</h1>
 
       {bookings.length === 0 ? (
         <p className="text-center text-gray-600">
@@ -128,7 +144,6 @@ export default function UpcomingBookingsPage() {
         <div className="space-y-4">
           {bookings.map((b) => (
             <div key={b.id} className="p-4 border rounded-lg shadow bg-white">
-              {/* Booking Header */}
               <div className="flex justify-between items-center mb-3">
                 <p className="font-semibold">
                   {new Date(b.scheduled_date).toDateString()}
@@ -136,17 +151,14 @@ export default function UpcomingBookingsPage() {
                 <button
                   className="px-3 py-1 text-red-600 border border-red-600 rounded hover:bg-red-50"
                   onClick={async () => {
-                    await supabase.from("bookings").delete().eq("id", b.id);
-                    setBookings((prev) =>
-                      prev.filter((bk) => bk.id !== b.id)
-                    );
+                    await supabase.from('bookings').delete().eq('id', b.id);
+                    setBookings((prev) => prev.filter((bk) => bk.id !== b.id));
                   }}
                 >
                   Cancel
                 </button>
               </div>
 
-              {/* Sessions inside a booking */}
               <div className="space-y-2">
                 {b.class_sessions.length === 0 ? (
                   <p className="text-sm text-gray-500">No sessions found</p>
@@ -154,28 +166,17 @@ export default function UpcomingBookingsPage() {
                   b.class_sessions.map((session, idx) => {
                     const classType = session.class_types;
                     const startTime = session.start_time
-                      ? new Date(
-                          `1970-01-01T${session.start_time}Z`
-                        ).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
+                      ? new Date(`1970-01-01T${session.start_time}Z`).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
                         })
-                      : "";
+                      : '';
 
                     return (
-                      <div
-                        key={idx}
-                        className="p-3 border rounded bg-gray-50"
-                      >
-                        <p className="text-lg font-semibold">
-                          {classType?.name || "Unnamed Class"}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {classType?.description || ""}
-                        </p>
-                        <p className="text-sm text-gray-700 mt-1">
-                          at {startTime}
-                        </p>
+                      <div key={idx} className="p-3 border rounded bg-gray-50">
+                        <p className="text-lg font-semibold">{classType?.name || 'Unnamed Class'}</p>
+                        <p className="text-sm text-gray-600">{classType?.description || ''}</p>
+                        <p className="text-sm text-gray-700 mt-1">at {startTime}</p>
                       </div>
                     );
                   })
